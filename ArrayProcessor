@@ -1,0 +1,41 @@
+public class ArrayProcessor {
+    public long sum(boolean[][] pattern, long [][] theArray) {
+        
+        long sum = 0;
+        for (int i = 0; i < theArray.length-3; i++) {
+            for (int row = 0;row < theArray[i].length; row++) {
+                
+                if (
+                    theArray[i].length >= row + pattern[0].length &&
+                    theArray[i+1].length >= row + pattern[1].length &&
+                    theArray[i+2].length >= row + pattern[2].length &&
+                    theArray[i+3].length >= row + pattern[3].length)
+                {
+                    for (int column = 0; column < 4; column++) {
+                        for (int patternLength = 0; patternLength < pattern[column].length; patternLength++) {
+                            if (pattern[column][patternLength]) {
+                                sum += theArray[i+column][row+patternLength];
+                            }
+                        }
+                    }    
+                }
+            }
+        }
+        
+        return sum;
+    }
+    public long process(long[][] theArray) {
+        
+         
+        
+        boolean [][] pattern =
+            {{false,true,true},
+            {true,false,false,true},
+            {true,false,false,true},
+            {false,true,true}};
+        
+        long sum = sum(pattern, theArray);
+        
+        return sum;
+    }
+}
