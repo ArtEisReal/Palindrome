@@ -3,33 +3,43 @@ public class CardProcessor {
     public void sortCards( final Card[] cardsToBeSorted ){
         Card[][] unsorted = generateCardMatrix(cardsToBeSorted);
         Card[][] sorted = new Card[4][13];
-        int numberOfRows = unsorted.length;
-        int numberOfColumns = unsorted[0].length;
+        int numberOfSuit = unsorted.length;
+        int numberOfRank = unsorted[0].length;
         int suit = 0;
         int rank;
-        for (int rows = 0; rows < numberOfRows; rows++) {
-            for (int column = 0; column < numberOfColumns; column++) {
-                if (unsorted[rows][column]!= null) {
-                    suit = unsorted[rows][column].getSuit().ordinal();
-                    rank = unsorted[rows][column].getRank().ordinal();
-                    sorted[suit][rank] = unsorted[rows][column];
+        for (int suitDimension = 0; suitDimension < numberOfSuit; suitDimension++) {
+            for (int rankDimension = 0; rankDimension < numberOfRank; rankDimension++) {
+                if (unsorted[suitDimension][rankDimension]!= null) {
+                    suit = unsorted[suitDimension][rankDimension].getSuit().ordinal();
+                    rank = unsorted[suitDimension][rankDimension].getRank().ordinal();
+                    sorted[suit][rank] = unsorted[suitDimension][rankDimension];
                 }
             }     
+        }
+        for (int suitDimension = 0; suitDimension < numberOfSuit; suitDimension++) {
+            for (int rankDimension = numberOfRank-1; rankDimension >= 0; rankDimension--) {
+                if (sorted[suitDimension][rankDimension]!= null) {
+                    System.out.println(sorted[suitDimension][rankDimension]);
+                }
+            }
         }
     }//method()
     
     public Card[][] generateCardMatrix( Card[] givencards ){
-        Card[][] matrix = new Card[4][13];
+        Card[][]matrix = new Card[4][13];
         int suitDimension = 0;
         int rankDimension = 0;
         for (int i = 0; i < givencards.length; i++) {
+            
             if (rankDimension == 13) {
                 rankDimension = 0;
                 suitDimension++;
             }
-            matrix [suitDimension][rankDimension] = givencards[i];
+            final Card currentCard = givencards[i];
+            matrix [suitDimension][rankDimension] = currentCard;
+            rankDimension++;
         }
+        
         return matrix;
     }
-        
 }//class
