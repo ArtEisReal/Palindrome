@@ -1,45 +1,85 @@
+package cardProcessor;
+
+
+import static cards.Card.*;
+import static cards.Card.Constant.*;
+
+import java.util.Arrays;
+
+//
+import cards.*;
+import cards.Card.*;
+
+
+
+/**
+ * CardProcessor - sort cards in-place - see task
+ * 
+ * @author  Artin Nouri, Malik Sonntag
+ * @version 22.05.2024
+ */
 public class CardProcessor {
     
+    final int numberOfSuit = 4;
+    final int numberOfRank = 13;
+    
+    
     public void sortCards( final Card[] cardsToBeSorted ){
-        Card[][] unsorted = generateCardMatrix(cardsToBeSorted);
-        Card[][] sorted = new Card[4][13];
-        int numberOfSuit = unsorted.length;
-        int numberOfRank = unsorted[0].length;
-        int suit = 0;
-        int rank;
-        for (int suitDimension = 0; suitDimension < numberOfSuit; suitDimension++) {
-            for (int rankDimension = 0; rankDimension < numberOfRank; rankDimension++) {
-                if (unsorted[suitDimension][rankDimension]!= null) {
-                    suit = unsorted[suitDimension][rankDimension].getSuit().ordinal();
-                    rank = unsorted[suitDimension][rankDimension].getRank().ordinal();
-                    sorted[suit][rank] = unsorted[suitDimension][rankDimension];
-                }
-            }     
-        }
-        for (int suitDimension = 0; suitDimension < numberOfSuit; suitDimension++) {
-            for (int rankDimension = numberOfRank-1; rankDimension >= 0; rankDimension--) {
-                if (sorted[suitDimension][rankDimension]!= null) {
-                    System.out.println(sorted[suitDimension][rankDimension]);
+        final int[] positionAdaptation = { CLUB.ordinal(), SPADES.ordinal(), HEART.ordinal(), DIAMOND.ordinal() };
+        
+        //method to create a two Dimensional (one on one Dimensional, not sorted) Array with the Cards given
+        Card[][] sorted = generateCardMatrix(cardsToBeSorted);
+        
+        // create an index for storing the sorted 2 dimensional Array back in the one Dimensional given Array
+        int i = 0;
+        int currentSuitIndex = 0;
+        for (int rankDimension = sorted[currentSuitIndex].length-1; rankDimension > 0; rankDimension--)  {
+            for (int suitIndex = 0; suitIndex < sorted.length; suitIndex++){
+                final int adaptedSuitIndex = positionAdaptation[suitIndex];
+                final Card currentCard = sorted[adaptedSuitIndex ][rankDimension];
+                if (currentCard != null){
+                    cardsToBeSorted[i] = currentCard;
+                    i++;
+                    currentSuitIndex++;
                 }
             }
         }
     }//method()
     
+    
     public Card[][] generateCardMatrix( Card[] givencards ){
-        Card[][]matrix = new Card[4][13];
+        
+        
+        Card[][]unsorted = new Card[numberOfSuit][numberOfRank];
+        Card[][] sorted = new Card[numberOfSuit][numberOfRank];
         int suitDimension = 0;
         int rankDimension = 0;
+        int suit = 0;
+        int rank = 0;
+        //iterate thru the given Array
         for (int i = 0; i < givencards.length; i++) {
             
+            //check if column reached 13 so we store the next card in the next row
             if (rankDimension == 13) {
                 rankDimension = 0;
                 suitDimension++;
             }
+            //save and put the current Card in the unsorted Array
             final Card currentCard = givencards[i];
-            matrix [suitDimension][rankDimension] = currentCard;
+            unsorted [suitDimension][rankDimension] = currentCard;
             rankDimension++;
         }
         
-        return matrix;
+      //iterate thru every Dimension and sort the Cards with storing them on the right place one by one
+        for (int indexSuit = 0; indexSuit < numberOfSuit; indexSuit++) {
+            for (int indesRank = 0; indesRank < numberOfRank; indesRank++) {
+                if (unsorted[indexSuit][indesRank]!= null) {
+                    suit = unsorted[indexSuit][indesRank].getSuit().ordinal();
+                    rank = unsorted[indexSuit][indesRank].getRank().ordinal();
+                    sorted[suit][rank] = unsorted[indexSuit][indesRank];
+                }
+            }     
+        }
+        return sorted;
     }
 }//class
