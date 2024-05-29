@@ -1,40 +1,77 @@
+// This source code is UTF-8 coded - see https://stackoverflow.com/questions/9180981/how-to-support-utf-8-encoding-in-eclipse
+package patternBasedArrayProcessor;
+ 
+ 
+/**
+ * ArrayProcessor - see task
+ * 
+ * @author  Artin Nouri, Malik Sonntag
+ * @version  21.05.2024
+ *
+ */
+
 public class ArrayProcessor {
-    public long sum(boolean[][] pattern, long [][] theArray) {
+    
+    public boolean isPatternFitting(boolean[][] pattern, long [][] theArray, int column, int row) {
+        
+        int index = 0;
+        while(index < pattern.length && theArray[column+index].length >= row + pattern[index].length) {
+            
+            index++;
+        }
+        if (index >= pattern.length) {
+            index--;
+        }
+        return theArray[column+index].length >= row + pattern[index].length;
+    }
+    
+    public long sumAccordingToPattern(boolean[][] pattern, long [][] theArray, int column, int row) {
+        long sum = 0;
+        
+        for (int patternHeight = 0; patternHeight < pattern.length; patternHeight++) {
+            for (int patternLength = 0; patternLength < pattern[patternHeight].length; patternLength++) {
+                if (pattern[patternHeight][patternLength]) {
+                    sum += theArray[column+patternHeight][row+patternLength];
+                }
+            }
+        }    
+        
+        return sum;
+    }
+    
+    public long process(boolean[][] pattern, long [][] theArray) {
+        
         
         long sum = 0;
-        for (int i = 0; i < theArray.length-3; i++) {
-            for (int row = 0;row < theArray[i].length; row++) {
+        //Iterate thru the Column with out the last thre and the row of the Array
+        for (int column = 0; column < theArray.length - (pattern.length - 1); column++) {
+            for (int row = 0;row < theArray[column].length; row++) {
                 
-                if (
-                    theArray[i].length >= row + pattern[0].length &&
-                    theArray[i+1].length >= row + pattern[1].length &&
-                    theArray[i+2].length >= row + pattern[2].length &&
-                    theArray[i+3].length >= row + pattern[3].length)
-                {
-                    for (int column = 0; column < 4; column++) {
-                        for (int patternLength = 0; patternLength < pattern[column].length; patternLength++) {
-                            if (pattern[column][patternLength]) {
-                                sum += theArray[i+column][row+patternLength];
-                            }
-                        }
-                    }    
+                //Check if the current placement (top Left) will fit the pattern from there
+                if (isPatternFitting(pattern, theArray, column, row)){
+                    //add the wanted Numbers of the Array from the pattern in sum 
+                    sum += sumAccordingToPattern(pattern, theArray, column, row);
                 }
+                
             }
         }
         
         return sum;
     }
+    
+    
     public long process(long[][] theArray) {
         
          
-        
+        //create pattern with a 2 Dimensional (one on one) Boolean
         boolean [][] pattern =
-            {{false,true,true},
-            {true,false,false,true},
-            {true,false,false,true},
-            {false,true,true}};
+            {{true,true,true,true},
+            {true,true,true},
+            {true,true},
+            {true}};
         
-        long sum = sum(pattern, theArray);
+        //use Method to give back the Sum of the Numbers fitting with the pattern
+        long sum = process(pattern, theArray);
         
         return sum;
     }
