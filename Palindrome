@@ -1,16 +1,30 @@
-public class PalindromeTester {
+package simpleCharacterArrayBasedPalindromeTester;
 
+
+/**
+ * PalindromeTester - see task
+ * 
+ * @author   Artin Nouri, Malik Sonntag 
+ * @version  21.05.2024
+ *
+ */
+public class PalindromeTester {
     
     
     public boolean isPalindrome(char[] word){
         
-        for (int i = 0; i < word.length/2; i++) {
-            int mirrored = word.length - i - 1;
-            if (word[i]!=word[mirrored]) {
-                return false;
-            }
-            
+        int front = 0;
+        int back = word.length;
+        
+        // go from the beginning of the word till the mid
+        while (word[front] == word[back] && front < back) {
+            front++;
+            back--;
         }
-        return true;
+        
+        return front >= back;
+        
     }
+    
+    
 }//class
